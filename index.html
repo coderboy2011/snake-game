@@ -296,5 +296,45 @@
       if (direction !== 'LEFT') direction = 'RIGHT';
     });
   </script>
+  <script>
+  function selectDifficulty(level, speedValue) {
+    document.querySelectorAll('.difficulty-buttons button').forEach(button => {
+      button.classList.remove('selected');
+    });
+    document.getElementById(level).classList.add('selected');
+    speed = speedValue;
+    const startButton = document.getElementById('start');
+    startButton.classList.remove('easy', 'normal', 'hard', 'hardcore');
+    startButton.classList.add(level);
+    startButton.style.display = 'block';
+    
+    if (level === 'hardcore') {
+      const loadingMessage = document.createElement('div');
+      loadingMessage.id = 'loadingMessage';
+      loadingMessage.innerText = 'Подождите, загрузка ресурсов...';
+      loadingMessage.style.position = 'absolute';
+      loadingMessage.style.top = '50%';
+      loadingMessage.style.left = '50%';
+      loadingMessage.style.transform = 'translate(-50%, -50%)';
+      loadingMessage.style.fontSize = '1.5rem';
+      loadingMessage.style.color = 'white';
+      loadingMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+      loadingMessage.style.padding = '20px';
+      loadingMessage.style.borderRadius = '10px';
+      document.body.appendChild(loadingMessage);
+
+      setTimeout(() => {
+        document.body.classList.add('hardcore-bg');
+        hardcoreMusic.play();
+        document.body.removeChild(loadingMessage);
+      }, 5000);
+    } else {
+      document.body.classList.remove('hardcore-bg');
+      hardcoreMusic.pause();
+      hardcoreMusic.currentTime = 0;
+    }
+  }
+</script>
+
 </body>
 </html>
