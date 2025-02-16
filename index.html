@@ -250,6 +250,13 @@
         setTimeout(() => {
           hardcoreVideo.style.display = 'block';
           hardcoreMusic.play();
+          // Сначала видео запускается в режиме muted
+          hardcoreVideo.muted = true;
+          // Через 0.1 секунды убираем mute
+          setTimeout(() => {
+            hardcoreVideo.muted = false;
+          }, 100);
+  
           document.body.removeChild(loadingMessage);
         }, 3000);
       } else {
