@@ -3,14 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Snake Game с видео фоном2</title>
+  <title>Snake Game с видео фоном</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: Arial, sans-serif;
       display: flex;
@@ -25,7 +20,6 @@
       position: relative;
       z-index: 1;
     }
-    
     /* Видеофон для режима Hardcore */
     #hardcoreVideo {
       position: fixed;
@@ -35,25 +29,22 @@
       height: 100%;
       object-fit: cover;
       z-index: -1;
-      display: none; /* скрыто по умолчанию */
+      display: none;
     }
-    
     canvas {
       border: 3px solid #fff;
       background: #000;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 0 20px rgba(0,0,0,0.7);
       margin-bottom: 20px;
       width: 600px;
       height: 600px;
     }
-    
     #score, #bestScore {
       font-size: 1.8rem;
       margin: 10px 0;
-      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
       z-index: 2;
     }
-    
     .difficulty-buttons {
       position: absolute;
       top: 50%;
@@ -64,9 +55,8 @@
       gap: 10px;
       z-index: 2;
     }
-    
     .difficulty-buttons button {
-      background-color: rgba(0, 0, 0, 0.7);
+      background-color: rgba(0,0,0,0.7);
       color: white;
       padding: 12px 20px;
       border-radius: 10px;
@@ -75,16 +65,8 @@
       border: none;
       transition: transform 0.2s, background-color 0.3s;
     }
-    
-    .difficulty-buttons button:hover {
-      transform: scale(1.1);
-      background-color: #e74c3c;
-    }
-    
-    .difficulty-buttons button.selected {
-      background-color: #2ecc71;
-    }
-    
+    .difficulty-buttons button:hover { transform: scale(1.1); background-color: #e74c3c; }
+    .difficulty-buttons button.selected { background-color: #2ecc71; }
     .controls {
       position: absolute;
       right: 20px;
@@ -94,9 +76,8 @@
       gap: 20px;
       z-index: 2;
     }
-    
     .btn {
-      background-color: rgba(0, 0, 0, 0.6);
+      background-color: rgba(0,0,0,0.6);
       color: white;
       padding: 15px 20px;
       border-radius: 10px;
@@ -105,12 +86,7 @@
       border: none;
       transition: transform 0.2s, background-color 0.3s;
     }
-    
-    .btn:hover {
-      transform: scale(1.1);
-      background-color: #e74c3c;
-    }
-    
+    .btn:hover { transform: scale(1.1); background-color: #e74c3c; }
     #start {
       position: absolute;
       top: 50%;
@@ -126,29 +102,11 @@
       z-index: 2;
       transition: transform 0.4s, background-color 0.6s;
     }
-    
-    #start.easy {
-      background-color: #27ae60;
-    }
-    
-    #start.normal {
-      background-color: #f39c12;
-    }
-    
-    #start.hard {
-      background-color: #e74c3c;
-    }
-    
-    #start.hardcore {
-      background-color: #8e44ad;
-    }
-    
-    #start:hover {
-      transform: scale(1.1) translate(-50%, -50%);
-      background-color: #2ecc71;
-    }
-    
-    /* Стили для сообщения загрузки */
+    #start.easy { background-color: #27ae60; }
+    #start.normal { background-color: #f39c12; }
+    #start.hard { background-color: #e74c3c; }
+    #start.hardcore { background-color: #8e44ad; }
+    #start:hover { transform: scale(1.1) translate(-50%, -50%); background-color: #2ecc71; }
     #loadingMessage {
       position: absolute;
       top: 50%;
@@ -156,7 +114,7 @@
       transform: translate(-50%, -50%);
       font-size: 1.5rem;
       color: white;
-      background-color: rgba(0, 0, 0, 0.8);
+      background-color: rgba(0,0,0,0.8);
       padding: 20px;
       border-radius: 10px;
       z-index: 3;
@@ -196,13 +154,7 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const box = 20;
-    let score = 0;
-    let bestScore = 0;
-    let snake;
-    let food;
-    let direction;
-    let gameInterval;
-    let speed;
+    let score = 0, bestScore = 0, snake, food, direction, gameInterval, speed;
     
     const hardcoreMusic = document.getElementById('hardcoreMusic');
     const hardcoreVideo = document.getElementById('hardcoreVideo');
@@ -227,36 +179,29 @@
     }
   
     function selectDifficulty(level, speedValue) {
-      // Снимаем выделение со всех кнопок
       document.querySelectorAll('.difficulty-buttons button').forEach(button => {
         button.classList.remove('selected');
       });
-      // Выделяем выбранную кнопку
       document.getElementById(level).classList.add('selected');
   
       speed = speedValue;
       const startButton = document.getElementById('start');
-      startButton.classList.remove('easy', 'normal', 'hard', 'hardcore');
+      startButton.className = ''; // сброс классов
       startButton.classList.add(level);
       startButton.style.display = 'block';
   
       if (level === 'hardcore') {
-        // Показываем сообщение загрузки и через 3 секунды включаем видеофон и музыку
         const loadingMessage = document.createElement('div');
         loadingMessage.id = 'loadingMessage';
         loadingMessage.innerText = 'Подождите, загрузка ресурсов...';
         document.body.appendChild(loadingMessage);
   
+        // Здесь, поскольку пользователь нажал на кнопку, это считается пользовательским действием
         setTimeout(() => {
           hardcoreVideo.style.display = 'block';
+          // Немедленно включаем звук, так как действие уже инициировано
+          hardcoreVideo.muted = false;
           hardcoreMusic.play();
-          // Сначала видео запускается в режиме muted
-          hardcoreVideo.muted = true;
-          // Через 0.1 секунды убираем mute
-          setTimeout(() => {
-            hardcoreVideo.muted = false;
-          }, 100);
-  
           document.body.removeChild(loadingMessage);
         }, 3000);
       } else {
@@ -276,7 +221,7 @@
       ctx.fillRect(0, 0, canvas.width, canvas.height);
   
       for (let i = 0; i < snake.length; i++) {
-        ctx.fillStyle = i === 0 ? 'green' : 'lime';
+        ctx.fillStyle = (i === 0) ? 'green' : 'lime';
         ctx.fillRect(snake[i].x, snake[i].y, box, box);
       }
   
@@ -285,11 +230,10 @@
   
       let snakeX = snake[0].x;
       let snakeY = snake[0].y;
-  
       if (direction === 'RIGHT') snakeX += box;
-      if (direction === 'LEFT') snakeX -= box;
-      if (direction === 'UP') snakeY -= box;
-      if (direction === 'DOWN') snakeY += box;
+      if (direction === 'LEFT')  snakeX -= box;
+      if (direction === 'UP')    snakeY -= box;
+      if (direction === 'DOWN')  snakeY += box;
   
       if (snakeX === food.x && snakeY === food.y) {
         score++;
@@ -302,7 +246,6 @@
       let newHead = { x: snakeX, y: snakeY };
       snake.unshift(newHead);
   
-      // Проверка столкновений со стенами и собой
       if (snakeX < 0 || snakeY < 0 || snakeX >= canvas.width || snakeY >= canvas.height ||
           snake.slice(1).some(part => part.x === snakeX && part.y === snakeY)) {
         clearInterval(gameInterval);
@@ -323,15 +266,12 @@
     document.getElementById('up').addEventListener('click', () => {
       if (direction !== 'DOWN') direction = 'UP';
     });
-  
     document.getElementById('down').addEventListener('click', () => {
       if (direction !== 'UP') direction = 'DOWN';
     });
-  
     document.getElementById('left').addEventListener('click', () => {
       if (direction !== 'RIGHT') direction = 'LEFT';
     });
-  
     document.getElementById('right').addEventListener('click', () => {
       if (direction !== 'LEFT') direction = 'RIGHT';
     });
