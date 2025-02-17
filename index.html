@@ -3,13 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Snake Game с Shake в Hardcore режиме</title>
+  <title>Snake Game с Shake для всего</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     
     body {
       font-family: Arial, sans-serif;
@@ -26,16 +22,16 @@
       z-index: 1;
     }
     
-    /* Эффект тряски для canvas */
-    @keyframes shakeCanvas {
+    /* Эффект тряски для всего документа */
+    @keyframes shakeEffect {
       0% { transform: translate(0, 0); }
       25% { transform: translate(-5px, 5px); }
       50% { transform: translate(5px, -5px); }
       75% { transform: translate(-5px, -5px); }
       100% { transform: translate(5px, 5px); }
     }
-    .shake {
-      animation: shakeCanvas 0.1s infinite;
+    .shakeAll {
+      animation: shakeEffect 0.1s infinite;
     }
     
     /* Видеофон для режима Hardcore */
@@ -53,7 +49,7 @@
     canvas {
       border: 3px solid #fff;
       background: #000;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 0 20px rgba(0,0,0,0.7);
       width: 600px;
       height: 600px;
       z-index: 2;
@@ -63,7 +59,7 @@
     #score, #bestScore {
       font-size: 1.8rem;
       margin: 10px 0;
-      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
       z-index: 3;
     }
     
@@ -78,7 +74,7 @@
       z-index: 3;
     }
     .difficulty-buttons button {
-      background-color: rgba(0, 0, 0, 0.7);
+      background-color: rgba(0,0,0,0.7);
       color: white;
       padding: 12px 20px;
       border-radius: 10px;
@@ -105,7 +101,7 @@
       z-index: 3;
     }
     .btn {
-      background-color: rgba(0, 0, 0, 0.6);
+      background-color: rgba(0,0,0,0.6);
       color: white;
       padding: 15px 20px;
       border-radius: 10px;
@@ -139,7 +135,7 @@
       background-color: #2ecc71;
     }
     
-    /* Стили для сообщения загрузки */
+    /* Сообщение загрузки */
     #loadingMessage {
       position: absolute;
       top: 50%;
@@ -147,7 +143,7 @@
       transform: translate(-50%, -50%);
       font-size: 1.5rem;
       color: white;
-      background-color: rgba(0, 0, 0, 0.8);
+      background-color: rgba(0,0,0,0.8);
       padding: 20px;
       border-radius: 10px;
       z-index: 4;
@@ -186,9 +182,9 @@
     const ctx = canvas.getContext('2d');
     const box = 20;
     let score = 0, bestScore = 0, snake, food, direction, gameInterval, speed;
+    
     const hardcoreVideo = document.getElementById('hardcoreVideo');
-  
-    // Функция запуска игры
+    
     function startGame() {
       snake = [{ x: 12 * box, y: 12 * box }];
       food = { x: Math.floor(Math.random() * 30) * box, y: Math.floor(Math.random() * 30) * box };
@@ -200,91 +196,84 @@
       gameInterval = setInterval(drawGame, speed);
       document.getElementById('start').style.display = 'none';
     }
-  
-    // Функция обновления рекорда
+    
     function updateBestScore() {
       if (score > bestScore) {
         bestScore = score;
         document.getElementById('bestScore').innerText = `Best Score: ${bestScore}`;
       }
     }
-  
-    // Выбор сложности
+    
     function selectDifficulty(level, speedValue) {
+      // Убираем выделение со всех кнопок
       document.querySelectorAll('.difficulty-buttons button').forEach(button => {
         button.classList.remove('selected');
       });
       document.getElementById(level).classList.add('selected');
-  
+      
       speed = speedValue;
       const startButton = document.getElementById('start');
       startButton.className = '';
       startButton.classList.add(level);
       startButton.style.display = 'block';
-  
+      
       if (level === 'hardcore') {
-        // Показываем сообщение загрузки, затем включаем видеофон и добавляем эффект shake
+        // Показываем сообщение загрузки, затем включаем видеофон и эффект тряски для всего
         const loadingMessage = document.createElement('div');
         loadingMessage.id = 'loadingMessage';
         loadingMessage.innerText = 'Подождите, загрузка ресурсов...';
         document.body.appendChild(loadingMessage);
-  
+        
         setTimeout(() => {
           hardcoreVideo.style.display = 'block';
-          // Добавляем эффект тряски к canvas
-          document.getElementById('gameCanvas').classList.add('shake');
+          document.body.classList.add('shakeAll');
           document.body.removeChild(loadingMessage);
         }, 3000);
       } else {
         hardcoreVideo.style.display = 'none';
-        document.getElementById('gameCanvas').classList.remove('shake');
+        document.body.classList.remove('shakeAll');
       }
     }
-  
+    
     document.getElementById('easy').addEventListener('click', () => selectDifficulty('easy', 200));
     document.getElementById('normal').addEventListener('click', () => selectDifficulty('normal', 100));
     document.getElementById('hard').addEventListener('click', () => selectDifficulty('hard', 60));
     document.getElementById('hardcore').addEventListener('click', () => selectDifficulty('hardcore', 40));
-  
-    // Функция отрисовки игры
+    
     function drawGame() {
       ctx.fillStyle = 'black';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-  
-      // Рисуем змейку
+      
       for (let i = 0; i < snake.length; i++) {
         ctx.fillStyle = i === 0 ? 'green' : 'lime';
         ctx.fillRect(snake[i].x, snake[i].y, box, box);
       }
-  
-      // Рисуем еду
+      
       ctx.fillStyle = 'red';
       ctx.fillRect(food.x, food.y, box, box);
-  
+      
       let snakeX = snake[0].x;
       let snakeY = snake[0].y;
-  
+      
       if (direction === 'RIGHT') snakeX += box;
       if (direction === 'LEFT') snakeX -= box;
       if (direction === 'UP') snakeY -= box;
       if (direction === 'DOWN') snakeY += box;
-  
-      // Если змейка съела еду
+      
       if (snakeX === food.x && snakeY === food.y) {
         score++;
         document.getElementById('score').innerText = `Score: ${score}`;
-        food = {
-          x: Math.floor(Math.random() * 30) * box,
-          y: Math.floor(Math.random() * 30) * box
+        food = { 
+          x: Math.floor(Math.random() * 30) * box, 
+          y: Math.floor(Math.random() * 30) * box 
         };
       } else {
         snake.pop();
       }
-  
+      
       let newHead = { x: snakeX, y: snakeY };
       snake.unshift(newHead);
-  
-      // Проверка столкновений
+      
       if (snakeX < 0 || snakeY < 0 || snakeX >= canvas.width || snakeY >= canvas.height ||
           snake.slice(1).some(part => part.x === snakeX && part.y === snakeY)) {
         clearInterval(gameInterval);
@@ -292,10 +281,9 @@
         document.getElementById('start').style.display = 'block';
       }
     }
-  
+    
     document.getElementById('start').addEventListener('click', startGame);
-  
-    // Управление с клавиатуры
+    
     document.addEventListener('keydown', event => {
       if (event.code === 'ArrowUp' && direction !== 'DOWN') direction = 'UP';
       if (event.code === 'ArrowDown' && direction !== 'UP') direction = 'DOWN';
@@ -305,5 +293,3 @@
   </script>
 </body>
 </html>
-
-
