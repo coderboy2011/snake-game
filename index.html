@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Snake Game с Shake для всего</title>
+  <title>Snake Game beta</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
@@ -160,6 +160,8 @@
   <div id="score">Score: 0</div>
   <div id="bestScore">Best Score: 0</div>
   <canvas id="gameCanvas" width="600" height="600"></canvas>
+  <audio id="myAudio" src="Qoshiq.mp3" preload="auto"></audio>
+
   
   <div class="difficulty-buttons">
     <button id="easy">Easy</button>
@@ -223,6 +225,8 @@
         loadingMessage.id = 'loadingMessage';
         loadingMessage.innerText = 'Подождите, загрузка ресурсов...';
         document.body.appendChild(loadingMessage);
+        document.getElementById('myAudio').play();
+
         
         setTimeout(() => {
           hardcoreVideo.style.display = 'block';
